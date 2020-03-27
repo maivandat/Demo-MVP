@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/dp10"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:src="@drawable/ic_launcher_background"
+            android:id="@+id/imageViewSongItem"
+            android:layout_width="@dimen/dp100"
+            android:layout_height="@dimen/dp100"/>
+
+        <LinearLayout
+            android:padding="@dimen/dp10"
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:textStyle="bold"
+                android:text="@string/label_songName"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/sp20"
+                android:id="@+id/textViewSongName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <LinearLayout
+                android:gravity="center"
+                android:layout_marginTop="@dimen/dp10"
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:src="@drawable/ic_access_time_grey_24dp"
+                    android:layout_width="@dimen/dp20"
+                    android:layout_height="@dimen/dp20"/>
+
+                <TextView
+                    android:paddingLeft="@dimen/dp5"
+                    android:text="@string/durationSong"
+                    android:textColor="@color/colorGrey"
+                    android:textSize="@dimen/sp20"
+                    android:id="@+id/textViewSongDuration"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <View
+        android:layout_marginTop="@dimen/dp10"
+        android:background="@color/colorGrey"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"/>
+
+</LinearLayout>
