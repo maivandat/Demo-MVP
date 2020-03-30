@@ -4,17 +4,33 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import com.example.demomvp.R
-import com.example.demomvp.data.data
-import com.example.demomvp.model.Song
+import com.example.demomvp.data.model.Song
+import com.example.demomvp.data.source.MusicRepository
+import com.example.demomvp.data.source.remote.MusicRemoteDataSource
+import com.example.demomvp.data.source.remote.OnFetchDataJsonListener
+import com.example.demomvp.data.source.remote.fetchjson.ParseDataWithJson
 import com.example.demomvp.ui.playmusic.PlayMusicActivity
 import java.io.Serializable
+import java.lang.Exception
 
-class MusicsPresenter private constructor(private val activity: Activity): MusicsContract.Presenter {
+class MusicsPresenter(
+    private val activity: Activity,
+    private val mMusicRepositoy: MusicRepository
+): MusicsContract.Presenter {
 
     private var mView: MusicsContract.View? = null
 
     override fun getMusicList() {
-        mView!!.musics(data)
+        mMusicRepositoy.getData(object : OnFetchDataJsonListener<Song> {
+            override fun onSuccess(data: MutableList<Song>?) {
+                mView!!.musics(data!!)
+            }
+
+            override fun onError(e: Exception?) {
+
+            }
+
+        })
     }
 
     override fun sendMusicData(context: Context, obj: Song, position: Int, list: MutableList<Song>) {
@@ -26,6 +42,14 @@ class MusicsPresenter private constructor(private val activity: Activity): Music
         activity.overridePendingTransition(R.anim.anim_down, R.anim.anim_up)
     }
 
+    override fun onStart() {
+
+    }
+
+    override fun onStop() {
+
+    }
+
     override fun setView(view: MusicsContract.View) {
         mView = view
     }
@@ -33,9 +57,9 @@ class MusicsPresenter private constructor(private val activity: Activity): Music
     companion object {
         private var sInstance: MusicsPresenter? = null
 
-        fun getInstance(activity: Activity): MusicsPresenter {
+        fun getInstance(activity: Activity, mMusicRepositoy: MusicRepository): MusicsPresenter {
             if (sInstance == null) {
-                sInstance = MusicsPresenter(activity)
+                sInstance = MusicsPresenter(activity, mMusicRepositoy)
             }
             return sInstance!!
         }

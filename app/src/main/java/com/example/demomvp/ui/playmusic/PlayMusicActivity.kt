@@ -9,7 +9,7 @@ import android.view.View
 import android.widget.CompoundButton
 import android.widget.SeekBar
 import com.example.demomvp.R
-import com.example.demomvp.model.Song
+import com.example.demomvp.data.model.Song
 import com.example.demomvp.utils.getSongDuration
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_play_music.*
@@ -39,7 +39,7 @@ class PlayMusicActivity : AppCompatActivity(), PlayMusicContract.View,
 
         mPlayMusicPresenter.getSongData(this)
 
-        mPlayMusicPresenter.startSong(mSong!!.songURL, mediaPlayer)
+        mPlayMusicPresenter.startSong(mSong!!.urlSong, mediaPlayer)
 
 
         handler.postDelayed(updateSeeBarThread,50)
@@ -89,9 +89,9 @@ class PlayMusicActivity : AppCompatActivity(), PlayMusicContract.View,
     }
 
     private fun bindData(song: Song) {
-        textViewSongName.text = song.nameSong.split("-")[0].trim()
-        textViewSinger.text = song.nameSong.split("-")[1].trim()
-        Picasso.with(this).load(song.imageURL).into(imageViewPlaySong)
+        textViewSongName.text = song.titile!!.split("-")[0].trim()
+        textViewSinger.text = song.titile.split("-")[1].trim()
+        Picasso.with(this).load(song.urlImage).into(imageViewPlaySong)
     }
 
     override fun onClick(v: View?) {
