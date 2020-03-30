@@ -2,9 +2,8 @@ package com.example.demomvp.ui.playmusic
 
 import android.app.Activity
 import android.media.MediaPlayer
-import android.os.Handler
-import com.example.demomvp.model.Song
-import com.example.demomvp.ui.base.BasePresenter
+import com.example.demomvp.data.model.Song
+import com.example.demomvp.utils.BasePresenter
 
 interface PlayMusicContract {
     interface View {

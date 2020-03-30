@@ -4,9 +4,8 @@ import android.app.Activity
 import android.content.Context
 import android.media.AudioManager
 import android.media.MediaPlayer
-import android.os.Handler
 import android.util.Log
-import com.example.demomvp.model.Song
+import com.example.demomvp.data.model.Song
 import com.example.demomvp.utils.getSongDuration
 
 class PlayMusicPresenter(private val context: Context) : PlayMusicContract.Presenter {
@@ -50,7 +49,7 @@ class PlayMusicPresenter(private val context: Context) : PlayMusicContract.Prese
             mPosition = 0
         }
         mView.getSong(listSong[mPosition], mPosition)
-        startSong(listSong[mPosition].songURL, mediaPlayer)
+        startSong(listSong[mPosition].urlSong, mediaPlayer)
         mView.getCurrentPosition(0, "00:00")
     }
 
@@ -63,7 +62,7 @@ class PlayMusicPresenter(private val context: Context) : PlayMusicContract.Prese
         }
 
         mView.getSong(listSong[mPosition], mPosition)
-        startSong(listSong[mPosition].songURL, mediaPlayer)
+        startSong(listSong[mPosition].urlSong, mediaPlayer)
         mView.getCurrentPosition(0, "00:00")
     }
 
@@ -79,6 +78,14 @@ class PlayMusicPresenter(private val context: Context) : PlayMusicContract.Prese
             var currentPositionStr = getSongDuration(currentPosition.toLong())
             mView.getCurrentPosition(currentPosition, currentPositionStr)
         }
+    }
+
+    override fun onStart() {
+
+    }
+
+    override fun onStop() {
+
     }
 
     override fun setView(view: PlayMusicContract.View) {

@@ -1,12 +1,13 @@
 package com.example.demomvp.ui.adapter
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.demomvp.R
-import com.example.demomvp.model.Song
+import com.example.demomvp.data.model.Song
 import com.example.demomvp.utils.ItemRecyclerOnClickListener
 import com.example.demomvp.utils.getSongDuration
 import com.squareup.picasso.Picasso
@@ -49,11 +50,12 @@ class MusicAdapter(
 
         fun bindData(data: Song) {
             mSong = data
-            Picasso.with(context).load(data.imageURL).into(itemView.imageViewSongItem)
+            Log.d(LOG, "title: ${data.titile}, urlSong: ${data.urlSong}, urlImage: ${data.urlImage}")
+            Picasso.with(context).load(data.urlImage).into(itemView.imageViewSongItem)
 
-            itemView.textViewSongName.text = data.nameSong
+            itemView.textViewSongName.text = data.titile
 
-            itemView.textViewSongDuration.text = getSongDuration(context, data.songURL)
+            itemView.textViewSongDuration.text = getSongDuration(context, data.urlSong)
 
             itemView.setOnClickListener(this)
         }
