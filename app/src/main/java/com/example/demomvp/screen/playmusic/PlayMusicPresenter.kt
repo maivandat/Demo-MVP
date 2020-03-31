@@ -11,36 +11,39 @@ import com.example.demomvp.utils.Constant
 import com.example.demomvp.utils.getSongDuration
 
 class PlayMusicPresenter : PlayMusicContract.Presenter {
-    private lateinit var mView: PlayMusicContract.View
+    private lateinit var viewContract: PlayMusicContract.View
+
+    companion object {
+        private val LOG = PlayMusicPresenter::class.java.simpleName
+    }
 
     override fun getSongData(activity: Activity) {
         val intent = activity.intent
-        val obj = intent.getSerializableExtra(Constant.KEY_SONG) as Song
-        val songs = intent.getSerializableExtra(Constant.KEY_LIST_SONG) as List<Song>
-        mView.getMusicData(obj, songs)
+        val song = intent.getSerializableExtra(Constant.KEY_SONG) as Song
+        val songList = intent.getSerializableExtra(Constant.KEY_LIST_SONG) as List<Song>
+        viewContract.getMusicData(song, songList)
     }
 
-    override fun pauseSong(mediaPlayerManager: MediaPlayerManager) {
-        mediaPlayerManager.pause()
-    }
+    override fun pauseSong(mediaPlayerManager: MediaPlayerManager) { mediaPlayerManager.pause() }
 
-    override fun create(mediaPlayerManager: MediaPlayerManager, song: Song, songs: List<Song>) {
+    override fun create(
+        mediaPlayerManager: MediaPlayerManager,
+        song: Song,
+        songList: List<Song>
+    ) {
         mediaPlayerManager.updateSong(song)
-        mediaPlayerManager.updateSongs(songs)
+        mediaPlayerManager.updateSongs(songList)
         mediaPlayerManager.create()
     }
 
-    override fun startSong(mediaPlayerManager: MediaPlayerManager) {
-        mediaPlayerManager.start()
-    }
+    override fun startSong(mediaPlayerManager: MediaPlayerManager) { mediaPlayerManager.start() }
 
-    override fun stopSong(mediaPlayerManager: MediaPlayerManager) {
-        mediaPlayerManager.stop()
-    }
+    override fun stopSong(mediaPlayerManager: MediaPlayerManager) { mediaPlayerManager.stop() }
 
-    override fun seekSong(mediaPlayerManager: MediaPlayerManager, currentDuration: Int) {
-        mediaPlayerManager.seek(currentDuration)
-    }
+    override fun seekSong(
+        mediaPlayerManager: MediaPlayerManager,
+        currentDuration: Int
+    ) { mediaPlayerManager.seek(currentDuration) }
 
     override fun nextSong(mediaPlayerManager: MediaPlayerManager) {
         mediaPlayerManager.next()
@@ -52,27 +55,9 @@ class PlayMusicPresenter : PlayMusicContract.Presenter {
         mediaPlayerManager.start()
     }
 
-    override fun timeSong(mediaPlayer: MediaPlayer, position: Int,
-                          listSong: MutableList<Song>, progress: Int,
-                          max: Int) {
+    override fun onStart() {}
 
-    }
+    override fun onStop() {}
 
-    override fun onStart() {
-
-    }
-
-    override fun onStop() {
-
-    }
-
-    override fun setView(view: PlayMusicContract.View) {
-        mView = view
-    }
-
-    companion object {
-        private val LOG = PlayMusicPresenter::class.java.simpleName
-    }
-
-
+    override fun setView(view: PlayMusicContract.View) { viewContract = view }
 }

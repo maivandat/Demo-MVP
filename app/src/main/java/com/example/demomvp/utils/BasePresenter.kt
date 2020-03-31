@@ -1,6 +1,7 @@
 package com.example.demomvp.utils
 
 interface BasePresenter<T> {
+
     fun onStart()
 
     fun onStop()

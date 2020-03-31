@@ -11,44 +11,44 @@ import java.util.*
 
 
 fun getMediaPlayer(context: Context?): MediaPlayer? {
-    val mediaplayer = MediaPlayer()
+    val mediaPlayer = MediaPlayer()
     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
-        return mediaplayer
+        return mediaPlayer
     }
-    val any = try {
-        val cMediaTimeProvider =
+    try {
+        val mediaTimeProvider =
             Class.forName("android.media.MediaTimeProvider")
-        val cSubtitleController =
+        val subTitleController =
             Class.forName("android.media.SubtitleController")
-        val iSubtitleControllerAnchor =
+        val subTitleControllerAnchor =
             Class.forName("android.media.SubtitleController\$Anchor")
-        val iSubtitleControllerListener =
+        val subTitleControllerListener =
             Class.forName("android.media.SubtitleController\$Listener")
-        val constructor = cSubtitleController.getConstructor(
+        val constructor = subTitleController.getConstructor(
             *arrayOf(
-                Context::class.java, cMediaTimeProvider, iSubtitleControllerListener
+                Context::class.java, mediaTimeProvider, subTitleControllerListener
             )
         )
-        val subtitleInstance: Any = constructor.newInstance(context, null, null)
-        val f: Field = cSubtitleController.getDeclaredField("mHandler")
-        f.setAccessible(true)
+        val subTitleInstance: Any = constructor.newInstance(context, null, null)
+        val f: Field = subTitleController.getDeclaredField("mHandler")
+        f.isAccessible = true
         try {
-            f.set(subtitleInstance, Handler())
+            f.set(subTitleInstance, Handler())
         } catch (e: IllegalAccessException) {
-            return mediaplayer
+            return mediaPlayer
         } finally {
-            f.setAccessible(false)
+            f.isAccessible = false
         }
-        val setsubtitleanchor: Method = mediaplayer.javaClass.getMethod(
+        val setSubtitleAnchor: Method = mediaPlayer.javaClass.getMethod(
             "setSubtitleAnchor",
-            cSubtitleController,
-            iSubtitleControllerAnchor
+            subTitleController,
+            subTitleControllerAnchor
         )
-        setsubtitleanchor.invoke(mediaplayer, subtitleInstance, null)
-        //Log.e("", "subtitle is setted :p");
+        setSubtitleAnchor.invoke(mediaPlayer, subTitleInstance, null)
+        //Log.e("", "subtitle is setter :p");
     } catch (e: Exception) {
     }
-    return mediaplayer
+    return mediaPlayer
 }
 
 fun getSongDuration(context: Context?, url: String): String {

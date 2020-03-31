@@ -1,10 +1,7 @@
 package com.example.demomvp.screen.playmusic
 
-import android.media.MediaPlayer
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Handler
-import android.util.Log
 import android.view.View
 import android.widget.CompoundButton
 import android.widget.SeekBar
@@ -14,23 +11,27 @@ import com.example.demomvp.data.model.Song
 import com.example.demomvp.media.MediaPlayerManager
 import com.example.demomvp.media.OnClickItemMusic
 import com.example.demomvp.utils.getSongDuration
-import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_play_music.*
 
-class PlayMusicActivity : AppCompatActivity(), PlayMusicContract.View,
+class PlayMusicActivity :
+    AppCompatActivity(), PlayMusicContract.View,
     CompoundButton.OnCheckedChangeListener, View.OnClickListener,
-    SeekBar.OnSeekBarChangeListener, OnClickItemMusic{
-
-    private lateinit var mPlayMusicPresenter: PlayMusicPresenter
+    SeekBar.OnSeekBarChangeListener, OnClickItemMusic
+{
+    private lateinit var playMusicPresenter: PlayMusicPresenter
     private lateinit var mediaPlayerManager: MediaPlayerManager
+
+    companion object {
+        private val LOG = PlayMusicActivity::class.java.simpleName
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_play_music)
         initView()
         initData()
-
     }
+
     private fun initView() {
         checkBoxPlaySong.setOnCheckedChangeListener(this)
         imageButtonMove.setOnClickListener(this)
@@ -40,76 +41,72 @@ class PlayMusicActivity : AppCompatActivity(), PlayMusicContract.View,
     }
 
     private fun initData() {
-        mPlayMusicPresenter = PlayMusicPresenter()
-        mediaPlayerManager = MediaPlayerManager.getInstance(this)
-        mPlayMusicPresenter.setView(this)
-
+        playMusicPresenter = PlayMusicPresenter()
+        mediaPlayerManager = MediaPlayerManager.instance
+        playMusicPresenter.setView(this)
+        mediaPlayerManager.registerItemClickMusic(this)
 
     }
 
-    override fun getMusicData(song: Song, songs: List<Song>) {
-        mPlayMusicPresenter.create(mediaPlayerManager, song, songs)
-        mPlayMusicPresenter.startSong(mediaPlayerManager)
+    override fun getMusicData(song: Song, songList: List<Song>) {
+        playMusicPresenter.create(mediaPlayerManager, song, songList)
+        playMusicPresenter.startSong(mediaPlayerManager)
         bindData(song)
     }
 
     override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
         if (isChecked) {
-            mPlayMusicPresenter.pauseSong(mediaPlayerManager)
+            playMusicPresenter.pauseSong(mediaPlayerManager)
         }else {
-            mPlayMusicPresenter.startSong(mediaPlayerManager)
+            playMusicPresenter.startSong(mediaPlayerManager)
         }
     }
 
     private fun bindData(song: Song) {
-        textViewSongName.text = song.title.split("-")[0].trim()
-        textViewSinger.text = song.title.split("-")[1].trim()
+        textViewSongName.text = song.songTitle.split("-")[0].trim()
+        textViewSinger.text = song.songTitle.split("-")[1].trim()
         getImageCircle(song)
     }
 
     private fun getImageCircle(song: Song) {
         Glide.with(this)
-            .load(song.urlImage)
+            .load(song.songImageURL)
             .into(imageViewPlaySong)
     }
 
     override fun onClick(v: View?) {
         when(v) {
             imageButtonNext -> {
-                mPlayMusicPresenter.nextSong(mediaPlayerManager)
+                playMusicPresenter.nextSong(mediaPlayerManager)
             }
-
             imageButtonPrevious -> {
-                mPlayMusicPresenter.previousSong(mediaPlayerManager)
+                playMusicPresenter.previousSong(mediaPlayerManager)
             }
-
             imageButtonMove -> {
-                mediaPlayerManager.stop()
+                playMusicPresenter.stopSong(mediaPlayerManager)
                 finish()
                 overridePendingTransition(R.anim.anim_down, R.anim.anim_up)
             }
         }
     }
 
-
     override fun sendSong(song: Song) {
         bindData(song)
     }
 
-    override fun updateTime(currentDuration: Int, sCurrentDuration: String) {
+    override fun updateTime(currentDuration: Int, stringCurrentDuration: String) {
         progressSongTime.progress = currentDuration
-        textViewTimeBegin.text = sCurrentDuration
+        textViewTimeBegin.text = stringCurrentDuration
     }
 
-    override fun getDuration(duration: Int, sDuration: String) {
+    override fun getDuration(duration: Int, stringDuration: String) {
         progressSongTime.max = duration
-        textViewTimeFinish.text = sDuration
+        textViewTimeFinish.text = stringDuration
     }
 
     override fun setState(state: Boolean) {
         checkBoxPlaySong.isChecked = state
     }
-
 
     override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
         textViewTimeBegin.text = getSongDuration(progress.toLong())
@@ -121,21 +118,11 @@ class PlayMusicActivity : AppCompatActivity(), PlayMusicContract.View,
     }
 
     override fun onStopTrackingTouch(seekBar: SeekBar?) {
-        mPlayMusicPresenter.seekSong(mediaPlayerManager, seekBar!!.progress)
+        playMusicPresenter.seekSong(mediaPlayerManager, seekBar!!.progress)
     }
 
     override fun onResume() {
         super.onResume()
-        mPlayMusicPresenter.getSongData(this)
+        playMusicPresenter.getSongData(this)
     }
-
-
-    companion object {
-        private val LOG = PlayMusicActivity::class.java.simpleName
-    }
-
-
-
-
-
 }

@@ -13,31 +13,22 @@ import java.io.Serializable
 import java.lang.Exception
 
 class MusicsPresenter internal constructor(
-    private val activity: Activity,
     private val musicRepository: MusicRepository
 ): MusicsContract.Presenter {
 
-    private var mView: MusicsContract.View? = null
+    private var viewContract: MusicsContract.View? = null
 
     override fun getMusicList() {
         musicRepository.getData(object : OnFetchDataJsonListener<Song> {
             override fun onSuccess(data: MutableList<Song>?) {
-                mView!!.musics(data!!)
+                viewContract!!.musics(data!!)
             }
 
             override fun onError(e: Exception?) {
-                mView!!.onError(e!!)
+                viewContract!!.onError(e!!)
             }
 
         })
-    }
-
-    override fun sendMusicData(context: Context, obj: Song, songs: List<Song>) {
-        val intent = Intent(context, PlayMusicActivity::class.java)
-        intent.putExtra(Constant.KEY_SONG, obj)
-        intent.putExtra(Constant.KEY_LIST_SONG, songs as Serializable)
-        context.startActivity(intent)
-        activity.overridePendingTransition(R.anim.anim_down, R.anim.anim_up)
     }
 
     override fun onStart() {
@@ -49,11 +40,6 @@ class MusicsPresenter internal constructor(
     }
 
     override fun setView(view: MusicsContract.View) {
-        mView = view
+        viewContract = view
     }
-
-    companion object {
-
-    }
-
 }
