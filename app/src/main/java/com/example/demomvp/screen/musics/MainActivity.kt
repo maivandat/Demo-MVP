@@ -16,10 +16,8 @@ import java.io.Serializable
 import java.lang.Exception
 
 class MainActivity :
-    AppCompatActivity(),
-    MusicsContract.View,
-    OnItemRecyclerOnClickListener
-{
+    AppCompatActivity(), MusicsContract.View,
+    OnItemRecyclerOnClickListener {
     private lateinit var musicAdapter: MusicAdapter
     private lateinit var musicPresenter: MusicsPresenter
 
@@ -43,8 +41,8 @@ class MainActivity :
         musicPresenter.getMusicList()
     }
 
-    override fun musics(songList: MutableList<Song>) {
-        musicAdapter.updateData(songList)
+    override fun musics(mutableListSong: MutableList<Song>) {
+        musicAdapter.updateData(mutableListSong)
     }
 
     override fun onError(exception: Exception) {

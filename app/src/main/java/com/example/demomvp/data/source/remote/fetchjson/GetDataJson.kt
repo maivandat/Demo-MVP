@@ -4,11 +4,11 @@ import com.example.demomvp.data.model.Song
 import com.example.demomvp.data.source.remote.OnFetchDataJsonListener;
 import com.example.demomvp.utils.Constant;
 
-class GetDataJson(private var onFetchDataJsonListener: OnFetchDataJsonListener<Song>?) {
+class GetDataJson(private var listener: OnFetchDataJsonListener<Song>?) {
 
     fun getSongs() {
         val url = Constant.BASE_URL
-        GetJsonFromUrl(onFetchDataJsonListener).execute(url)
+        GetJsonFromUrl(listener).execute(url)
     }
 
 }

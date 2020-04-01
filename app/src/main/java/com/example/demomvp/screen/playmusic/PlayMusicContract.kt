@@ -10,16 +10,17 @@ interface PlayMusicContract {
 
     interface View {
 
-        fun getMusicData(song: Song, songList: List<Song>)
+        fun getMusicData(song: Song, mutableListSong: List<Song>)
     }
 
-    interface Presenter: BasePresenter<View> {
+    interface Presenter : BasePresenter<View> {
 
         fun getSongData(activity: Activity)
 
         fun pauseSong(mediaPlayerManager: MediaPlayerManager)
 
-        fun create(mediaPlayerManager: MediaPlayerManager, song: Song, listSong: List<Song>)
+        fun create(mediaPlayerManager: MediaPlayerManager,
+                   song: Song, mutableListSong: List<Song>)
 
         fun nextSong(mediaPlayerManager: MediaPlayerManager)
 
@@ -29,6 +30,7 @@ interface PlayMusicContract {
 
         fun stopSong(mediaPlayerManager: MediaPlayerManager)
 
-        fun seekSong(mediaPlayerManager: MediaPlayerManager, currentDuration: Int)
+        fun seekSong(mediaPlayerManager: MediaPlayerManager,
+                     currentDuration: Int)
     }
 }

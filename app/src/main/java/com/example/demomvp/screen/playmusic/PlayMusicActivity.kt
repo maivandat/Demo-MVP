@@ -16,14 +16,9 @@ import kotlinx.android.synthetic.main.activity_play_music.*
 class PlayMusicActivity :
     AppCompatActivity(), PlayMusicContract.View,
     CompoundButton.OnCheckedChangeListener, View.OnClickListener,
-    SeekBar.OnSeekBarChangeListener, OnClickItemMusic
-{
+    SeekBar.OnSeekBarChangeListener, OnClickItemMusic {
     private lateinit var playMusicPresenter: PlayMusicPresenter
     private lateinit var mediaPlayerManager: MediaPlayerManager
-
-    companion object {
-        private val LOG = PlayMusicActivity::class.java.simpleName
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,13 +43,14 @@ class PlayMusicActivity :
 
     }
 
-    override fun getMusicData(song: Song, songList: List<Song>) {
-        playMusicPresenter.create(mediaPlayerManager, song, songList)
+    override fun getMusicData(song: Song, mutableListSong: List<Song>) {
+        playMusicPresenter.create(mediaPlayerManager, song, mutableListSong)
         playMusicPresenter.startSong(mediaPlayerManager)
         bindData(song)
     }
 
-    override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
+    override fun onCheckedChanged(buttonView: CompoundButton?,
+                                  isChecked: Boolean) {
         if (isChecked) {
             playMusicPresenter.pauseSong(mediaPlayerManager)
         }else {
@@ -94,7 +90,8 @@ class PlayMusicActivity :
         bindData(song)
     }
 
-    override fun updateTime(currentDuration: Int, stringCurrentDuration: String) {
+    override fun updateTime(currentDuration: Int,
+                            stringCurrentDuration: String) {
         progressSongTime.progress = currentDuration
         textViewTimeBegin.text = stringCurrentDuration
     }
@@ -108,7 +105,9 @@ class PlayMusicActivity :
         checkBoxPlaySong.isChecked = state
     }
 
-    override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+    override fun onProgressChanged(seekBar: SeekBar?,
+                                   progress: Int,
+                                   fromUser: Boolean) {
         textViewTimeBegin.text = getSongDuration(progress.toLong())
 
     }

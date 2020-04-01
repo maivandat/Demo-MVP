@@ -4,5 +4,5 @@ import com.example.demomvp.data.model.Song
 
 interface OnItemRecyclerOnClickListener {
 
-    fun onRecyclerItemClick(song: Song?, songList: List<Song>)
+    fun onRecyclerItemClick(song: Song?, listSong: List<Song>)
 }

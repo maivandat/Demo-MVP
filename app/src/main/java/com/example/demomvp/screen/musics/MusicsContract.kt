@@ -8,12 +8,12 @@ interface MusicsContract {
 
     interface View {
 
-        fun musics(songList: MutableList<Song>)
+        fun musics(mutableListSong: MutableList<Song>)
 
         fun onError(exception: Exception)
     }
 
-    interface Presenter: BasePresenter<View> {
+    interface Presenter : BasePresenter<View> {
 
         fun getMusicList()
     }

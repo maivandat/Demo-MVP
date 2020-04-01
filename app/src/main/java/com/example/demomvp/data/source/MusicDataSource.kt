@@ -10,6 +10,6 @@ interface MusicDataSource {
     }
 
     interface Remote {
-        fun getData(onFetchDataJsonListener: OnFetchDataJsonListener<Song>)
+        fun getData(listener: OnFetchDataJsonListener<Song>)
     }
 }

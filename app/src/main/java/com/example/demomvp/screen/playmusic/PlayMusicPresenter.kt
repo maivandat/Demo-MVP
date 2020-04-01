@@ -13,32 +13,35 @@ import com.example.demomvp.utils.getSongDuration
 class PlayMusicPresenter : PlayMusicContract.Presenter {
     private lateinit var viewContract: PlayMusicContract.View
 
-    companion object {
-        private val LOG = PlayMusicPresenter::class.java.simpleName
-    }
-
     override fun getSongData(activity: Activity) {
         val intent = activity.intent
         val song = intent.getSerializableExtra(Constant.KEY_SONG) as Song
-        val songList = intent.getSerializableExtra(Constant.KEY_LIST_SONG) as List<Song>
-        viewContract.getMusicData(song, songList)
+        val listSong =
+            intent.getSerializableExtra(Constant.KEY_LIST_SONG) as List<Song>
+        viewContract.getMusicData(song, listSong)
     }
 
-    override fun pauseSong(mediaPlayerManager: MediaPlayerManager) { mediaPlayerManager.pause() }
+    override fun pauseSong(mediaPlayerManager: MediaPlayerManager) {
+        mediaPlayerManager.pause()
+    }
 
     override fun create(
         mediaPlayerManager: MediaPlayerManager,
         song: Song,
-        songList: List<Song>
+        listSong: List<Song>
     ) {
         mediaPlayerManager.updateSong(song)
-        mediaPlayerManager.updateSongs(songList)
+        mediaPlayerManager.updateSongs(listSong)
         mediaPlayerManager.create()
     }
 
-    override fun startSong(mediaPlayerManager: MediaPlayerManager) { mediaPlayerManager.start() }
+    override fun startSong(mediaPlayerManager: MediaPlayerManager) {
+        mediaPlayerManager.start()
+    }
 
-    override fun stopSong(mediaPlayerManager: MediaPlayerManager) { mediaPlayerManager.stop() }
+    override fun stopSong(mediaPlayerManager: MediaPlayerManager) {
+        mediaPlayerManager.stop()
+    }
 
     override fun seekSong(
         mediaPlayerManager: MediaPlayerManager,

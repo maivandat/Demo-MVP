@@ -6,13 +6,16 @@ import com.example.demomvp.data.source.remote.fetchjson.GetDataJson
 
 class MusicRemoteDataSource : MusicDataSource.Remote {
 
-    private object HOLDER { val INSTANCE = MusicRemoteDataSource() }
+    private object HOLDER {
+        val instance = MusicRemoteDataSource()
+    }
 
-    companion object { val instance: MusicRemoteDataSource by lazy { HOLDER.INSTANCE } }
+    companion object {
+        val instance: MusicRemoteDataSource by lazy { HOLDER.instance }
+    }
 
-    override fun getData(onFetchDataJsonListener: OnFetchDataJsonListener<Song>) {
-        val getDataJson = GetDataJson(onFetchDataJsonListener)
-        getDataJson.getSongs()
+    override fun getData(listener: OnFetchDataJsonListener<Song>) {
+        GetDataJson(listener).getSongs()
     }
 
 }

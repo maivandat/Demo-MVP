@@ -15,60 +15,60 @@ import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.layout_item_music.view.*
 
 class MusicAdapter : RecyclerView.Adapter<MusicAdapter.MyViewHolder>() {
-    private val songList = mutableListOf<Song>()
-    private var onItemRecyclerOnClickListener: OnItemRecyclerOnClickListener? = null
+    private val mutableListSong = mutableListOf<Song>()
+    private var onItemRecyclerListener: OnItemRecyclerOnClickListener? = null
+    private val logger = MusicAdapter::class.java.simpleName
 
-    companion object {
-        private val LOG = MusicAdapter::class.java.simpleName
-    }
 
     fun updateData(mutableSong: MutableList<Song>) {
         mutableSong.let {
-            this.songList.clear()
-            this.songList.addAll(it)
+            this.mutableListSong.clear()
+            this.mutableListSong.addAll(it)
             notifyDataSetChanged()
         }
     }
 
-    fun setOnItemClickListener(listenerOn: OnItemRecyclerOnClickListener) {
-        onItemRecyclerOnClickListener = listenerOn
+    fun setOnItemClickListener(listenerOn : OnItemRecyclerOnClickListener) {
+        onItemRecyclerListener = listenerOn
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MusicAdapter.MyViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup,
+                                    viewType: Int): MusicAdapter.MyViewHolder {
         return MyViewHolder(
             LayoutInflater.from(parent.context).inflate(
                 R.layout.layout_item_music, parent,
                 false
-            ), onItemRecyclerOnClickListener!!
+            ), onItemRecyclerListener!!
         )
     }
 
-    override fun getItemCount(): Int = songList.size
+    override fun getItemCount() = mutableListSong.size
 
     override fun onBindViewHolder(holder: MusicAdapter.MyViewHolder, position: Int) {
-        holder.bindData(songList[position])
+        holder.bindData(mutableListSong[position])
     }
 
-    inner class MyViewHolder(
-        itemView: View,
-        private val onItemRecyclerOnClickListener: OnItemRecyclerOnClickListener
-    ): RecyclerView.ViewHolder(itemView), View.OnClickListener {
-
+    inner class MyViewHolder(itemView: View,
+                             private val listenerOn: OnItemRecyclerOnClickListener) :
+        RecyclerView.ViewHolder(itemView), View.OnClickListener {
         private var song: Song? = null
         private var onItemClick: OnItemRecyclerOnClickListener? = null
 
         fun bindData(data: Song) {
             song = data
-            Log.d(LOG, "title: ${data.songTitle}, urlSong: ${data.songURL}, urlImage: ${data.songImageURL}")
+            Log.d(logger, "title: ${data.songTitle}, " +
+                               "urlSong: ${data.songURL}, " +
+                               "urlImage: ${data.songImageURL}")
             itemView.textViewSongName.text = data.songTitle
-            itemView.textViewSongDuration.text = getSongDuration(itemView.context, data.songURL)
+            itemView.textViewSongDuration.text = getSongDuration(itemView.context,
+                                                                 data.songURL)
             itemView.setOnClickListener(this)
-            onItemClick = onItemRecyclerOnClickListener
+            onItemClick = listenerOn
             getImageCircle(data)
         }
 
         override fun onClick(v: View?) {
-            onItemClick?.onRecyclerItemClick(song, songList)
+            onItemClick?.onRecyclerItemClick(song, mutableListSong)
         }
 
         private fun getImageCircle(song: Song) {

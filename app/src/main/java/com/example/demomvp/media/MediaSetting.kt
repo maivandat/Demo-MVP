@@ -3,7 +3,7 @@ package com.example.demomvp.media
 import android.media.MediaPlayer
 
 abstract class MediaSetting {
-    protected val mediaPlayer: MediaPlayer = MediaPlayer()
+    protected val mediaPlayer = MediaPlayer()
 
     abstract fun create()
 
@@ -21,7 +21,7 @@ abstract class MediaSetting {
 
     abstract fun seek(milliSecond: Int)
 
-    protected fun getDuration(): Int = mediaPlayer.duration
+    protected fun getDuration() = mediaPlayer.duration
 
-    protected fun currentDuration(): Int = mediaPlayer.currentPosition
+    protected fun getCurrentDuration() = mediaPlayer.currentPosition
 }

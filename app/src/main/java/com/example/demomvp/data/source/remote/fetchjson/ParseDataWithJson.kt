@@ -12,12 +12,6 @@ import java.util.*
 
 class ParseDataWithJson {
 
-    companion object {
-        private const val TIME_OUT = 15000
-        private const val METHOD_GET = "GET"
-        private val LOG = ParseDataWithJson::class.java.simpleName
-    }
-
     @Throws(Exception::class)
     fun getJsonFromUrl(urlString: String?): String? {
         val url = URL(urlString)
@@ -45,7 +39,6 @@ class ParseDataWithJson {
         try {
             val jsonArray = jsonObject.getJSONArray(SongEntry.SONG)
             for (i in 0 until jsonArray.length()) {
-
                 val songJson = jsonArray.getJSONObject(i)
                 val song = parseJsonToObject(songJson)
                 songList.add(song)
@@ -66,5 +59,10 @@ class ParseDataWithJson {
             e.printStackTrace()
         }
         return song!!
+    }
+
+    companion object {
+        private const val TIME_OUT = 15000
+        private const val METHOD_GET = "GET"
     }
 }
