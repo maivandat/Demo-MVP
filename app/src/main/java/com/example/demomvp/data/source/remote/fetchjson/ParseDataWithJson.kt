@@ -1,4 +1,4 @@
-package com.example.demomvp.data.source.remote.fetchjson;
+package com.example.demomvp.data.source.remote.fetchjson
 
 import com.example.demomvp.data.model.Song
 import com.example.demomvp.data.model.SongEntry
@@ -41,7 +41,7 @@ class ParseDataWithJson {
             for (i in 0 until jsonArray.length()) {
                 val songJson = jsonArray.getJSONObject(i)
                 val song = parseJsonToObject(songJson)
-                songList.add(song)
+                songList.add(song!!)
             }
         } catch (e: JSONException) {
             e.printStackTrace()
@@ -49,7 +49,7 @@ class ParseDataWithJson {
         return songList
     }
 
-    private fun parseJsonToObject(jsonObjectSong: JSONObject): Song {
+    private fun parseJsonToObject(jsonObjectSong: JSONObject): Song? {
         var song: Song? = null
         try {
             song = Song(jsonObjectSong.getString(SongEntry.TITLE),

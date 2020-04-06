@@ -5,7 +5,7 @@ import android.os.Handler
 import com.example.demomvp.utils.getSongDuration
 
 class MediaPlayerManager private constructor() : MediaSetting() {
-    private var onClickItem: OnClickItemMusic? = null
+    private lateinit var onClickItem: OnClickItemMusic
     private var currentSong: Song? = null
     private val mutableListSong = mutableListOf<Song>()
     private val handler = Handler()
@@ -40,15 +40,15 @@ class MediaPlayerManager private constructor() : MediaSetting() {
     override fun start() {
         handler.removeCallbacks(updateSeekBarThread)
         mediaPlayer.start()
-        onClickItem!!.getDuration(getDuration(),
+        onClickItem.getDuration(getDuration(),
                                   getSongDuration(getDuration().toLong()))
-        onClickItem!!.setState(false)
+        onClickItem.setState(false)
         handler.post(updateSeekBarThread)
     }
 
     override fun pause() {
         mediaPlayer.pause()
-        onClickItem!!.setState(true)
+        onClickItem.setState(true)
         handler.removeCallbacks(updateSeekBarThread)
     }
 
@@ -73,7 +73,7 @@ class MediaPlayerManager private constructor() : MediaSetting() {
         var position = mutableListSong.indexOf(currentSong)
         if (position == 0) position = mutableListSong.size - 1
         else position --
-        onClickItem!!.sendSong(mutableListSong[position])
+        onClickItem.sendSong(mutableListSong[position])
         return mutableListSong[position]
     }
 
@@ -84,7 +84,7 @@ class MediaPlayerManager private constructor() : MediaSetting() {
         } else {
             position ++
         }
-        onClickItem!!.sendSong(mutableListSong[position])
+        onClickItem.sendSong(mutableListSong[position])
         return mutableListSong[position]
     }
 
@@ -100,8 +100,8 @@ class MediaPlayerManager private constructor() : MediaSetting() {
 
         override fun run() {
             if (getCurrentDuration() < getDuration()) {
-                onClickItem!!.updateTime(getCurrentDuration(),
-                                         getSongDuration(getCurrentDuration().toLong()))
+                onClickItem.updateTime(getCurrentDuration(),
+                                       getSongDuration(getCurrentDuration().toLong()))
                 handler.post(this)
             } else {
                 handlerThread.removeCallbacks(this)
