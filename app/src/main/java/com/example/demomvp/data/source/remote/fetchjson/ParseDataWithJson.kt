@@ -34,14 +34,14 @@ class ParseDataWithJson {
         return stringBuilder.toString()
     }
 
-    fun parseJsonToData(jsonObject: JSONObject): List<Song>? {
+    fun parseJsonToData(jsonObject: JSONObject): MutableList<Song>? {
         val songList: MutableList<Song> = ArrayList()
         try {
             val jsonArray = jsonObject.getJSONArray(SongEntry.SONG)
             for (i in 0 until jsonArray.length()) {
                 val songJson = jsonArray.getJSONObject(i)
-                val song = parseJsonToObject(songJson)
-                songList.add(song!!)
+                val song: Song? = parseJsonToObject(songJson)
+                song?.let { songList.add(it) }
             }
         } catch (e: JSONException) {
             e.printStackTrace()
@@ -58,7 +58,7 @@ class ParseDataWithJson {
         } catch (e: JSONException) {
             e.printStackTrace()
         }
-        return song!!
+        return song
     }
 
     companion object {

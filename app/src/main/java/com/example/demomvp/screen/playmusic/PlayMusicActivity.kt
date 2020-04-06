@@ -14,9 +14,12 @@ import com.example.demomvp.utils.getSongDuration
 import kotlinx.android.synthetic.main.activity_play_music.*
 
 class PlayMusicActivity :
-    AppCompatActivity(), PlayMusicContract.View,
-    CompoundButton.OnCheckedChangeListener, View.OnClickListener,
-    SeekBar.OnSeekBarChangeListener, OnClickItemMusic {
+    AppCompatActivity(),
+    PlayMusicContract.View,
+    CompoundButton.OnCheckedChangeListener,
+    View.OnClickListener,
+    SeekBar.OnSeekBarChangeListener,
+    OnClickItemMusic {
     private lateinit var playMusicPresenter: PlayMusicPresenter
     private lateinit var mediaPlayerManager: MediaPlayerManager
 
@@ -66,8 +69,8 @@ class PlayMusicActivity :
 
     private fun getImageCircle(song: Song) {
         Glide.with(this)
-            .load(song.songImageURL)
-            .into(imageViewPlaySong)
+             .load(song.songImageURL)
+             .into(imageViewPlaySong)
     }
 
     override fun onClick(v: View?) {

@@ -19,7 +19,7 @@ interface PlayMusicContract {
         fun pauseSong(mediaPlayerManager: MediaPlayerManager)
 
         fun createSong(mediaPlayerManager: MediaPlayerManager,
-                   song: Song, mutableListSong: List<Song>)
+                       song: Song, mutableListSong: List<Song>)
 
         fun nextSong(mediaPlayerManager: MediaPlayerManager)
 

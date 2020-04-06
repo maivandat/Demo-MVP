@@ -5,7 +5,7 @@ import android.os.Handler
 import com.example.demomvp.utils.getSongDuration
 
 class MediaPlayerManager private constructor() : MediaSetting() {
-    private lateinit var onClickItem: OnClickItemMusic
+    private var onClickItem: OnClickItemMusic? = null
     private var currentSong: Song? = null
     private val mutableListSong = mutableListOf<Song>()
     private val handler = Handler()
@@ -19,14 +19,14 @@ class MediaPlayerManager private constructor() : MediaSetting() {
         val instance: MediaPlayerManager by lazy { HOLDER.INSTANCE }
     }
 
-    fun registerItemClickMusic(onClickItemMusic: OnClickItemMusic) {
+    fun registerItemClickMusic(onClickItemMusic: OnClickItemMusic?) {
         this.onClickItem = onClickItemMusic
     }
 
     override fun create() {
         mediaPlayer.reset()
         mediaPlayer.apply {
-            setDataSource(currentSong!!.songURL)
+            setDataSource(currentSong?.songURL)
             prepare()
             updateSeekBarThread = UpdateSeeBarThread(handler)
         }
@@ -40,15 +40,16 @@ class MediaPlayerManager private constructor() : MediaSetting() {
     override fun start() {
         handler.removeCallbacks(updateSeekBarThread)
         mediaPlayer.start()
-        onClickItem.getDuration(getDuration(),
-                                  getSongDuration(getDuration().toLong()))
-        onClickItem.setState(false)
+        onClickItem?.getDuration(getDuration(),
+                                  getSongDuration(getDuration().toLong())
+        )
+        onClickItem?.setState(false)
         handler.post(updateSeekBarThread)
     }
 
     override fun pause() {
         mediaPlayer.pause()
-        onClickItem.setState(true)
+        onClickItem?.setState(true)
         handler.removeCallbacks(updateSeekBarThread)
     }
 
@@ -71,9 +72,12 @@ class MediaPlayerManager private constructor() : MediaSetting() {
 
     private fun getSongPrevious(): Song {
         var position = mutableListSong.indexOf(currentSong)
-        if (position == 0) position = mutableListSong.size - 1
-        else position --
-        onClickItem.sendSong(mutableListSong[position])
+        if (position == 0) {
+            position = mutableListSong.size - 1
+        } else {
+            position --
+        }
+        onClickItem?.sendSong(mutableListSong[position])
         return mutableListSong[position]
     }
 
@@ -84,11 +88,11 @@ class MediaPlayerManager private constructor() : MediaSetting() {
         } else {
             position ++
         }
-        onClickItem.sendSong(mutableListSong[position])
+        onClickItem?.sendSong(mutableListSong[position])
         return mutableListSong[position]
     }
 
-    fun updateSong(song: Song) {
+    fun updateSong(song: Song?) {
         this.currentSong = song
     }
 
@@ -96,12 +100,14 @@ class MediaPlayerManager private constructor() : MediaSetting() {
         this.mutableListSong.addAll(list)
     }
 
-    inner class UpdateSeeBarThread(private val handlerThread: Handler) : Runnable {
+    inner class UpdateSeeBarThread(
+        private val handlerThread: Handler
+    ) : Runnable {
 
         override fun run() {
             if (getCurrentDuration() < getDuration()) {
-                onClickItem.updateTime(getCurrentDuration(),
-                                       getSongDuration(getCurrentDuration().toLong()))
+                onClickItem?.updateTime(getCurrentDuration(),
+                                         getSongDuration(getCurrentDuration().toLong()))
                 handler.post(this)
             } else {
                 handlerThread.removeCallbacks(this)
