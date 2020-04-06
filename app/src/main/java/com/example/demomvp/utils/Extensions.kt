@@ -4,57 +4,54 @@ import android.content.Context
 import android.media.MediaPlayer
 import android.os.Build
 import android.os.Handler
-import java.lang.reflect.Field
-import java.lang.reflect.Method
 import java.text.SimpleDateFormat
 import java.util.*
 
 
 fun getMediaPlayer(context: Context?): MediaPlayer? {
-    val mediaplayer = MediaPlayer()
+    val mediaPlayer = MediaPlayer()
     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
-        return mediaplayer
+        return mediaPlayer
     }
-    val any = try {
-        val cMediaTimeProvider =
+    try {
+        val mediaTimeProvider =
             Class.forName("android.media.MediaTimeProvider")
-        val cSubtitleController =
+        val subTitleController =
             Class.forName("android.media.SubtitleController")
-        val iSubtitleControllerAnchor =
+        val subTitleControllerAnchor =
             Class.forName("android.media.SubtitleController\$Anchor")
-        val iSubtitleControllerListener =
+        val subTitleControllerListener =
             Class.forName("android.media.SubtitleController\$Listener")
-        val constructor = cSubtitleController.getConstructor(
+        val constructor = subTitleController.getConstructor(
             *arrayOf(
-                Context::class.java, cMediaTimeProvider, iSubtitleControllerListener
+                Context::class.java, mediaTimeProvider, subTitleControllerListener
             )
         )
-        val subtitleInstance: Any = constructor.newInstance(context, null, null)
-        val f: Field = cSubtitleController.getDeclaredField("mHandler")
-        f.setAccessible(true)
+        val subTitleInstance = constructor.newInstance(context, null, null)
+        val filed = subTitleController.getDeclaredField("mHandler")
+            filed.isAccessible = true
         try {
-            f.set(subtitleInstance, Handler())
+            filed.set(subTitleInstance, Handler())
         } catch (e: IllegalAccessException) {
-            return mediaplayer
+            return mediaPlayer
         } finally {
-            f.setAccessible(false)
+            filed.isAccessible = false
         }
-        val setsubtitleanchor: Method = mediaplayer.javaClass.getMethod(
-            "setSubtitleAnchor",
-            cSubtitleController,
-            iSubtitleControllerAnchor
-        )
-        setsubtitleanchor.invoke(mediaplayer, subtitleInstance, null)
-        //Log.e("", "subtitle is setted :p");
-    } catch (e: Exception) {
-    }
-    return mediaplayer
+        val subTitleAnchor =
+            mediaPlayer.javaClass.getMethod("setSubtitleAnchor",
+                                            subTitleController,
+                                            subTitleControllerAnchor)
+            subTitleAnchor.invoke(mediaPlayer, subTitleInstance, null)
+        } catch (e: Exception) {
+            /**/
+        }
+    return mediaPlayer
 }
 
 fun getSongDuration(context: Context?, url: String): String {
     val mediaPlayer = getMediaPlayer(context)
-    mediaPlayer!!.setDataSource(url)
-    mediaPlayer.prepare()
+        mediaPlayer!!.setDataSource(url)
+        mediaPlayer.prepare()
     return SimpleDateFormat("mm:ss").format(Date(mediaPlayer.duration.toLong()))
 }
 

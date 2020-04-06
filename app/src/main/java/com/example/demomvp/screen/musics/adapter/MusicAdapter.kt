@@ -14,77 +14,67 @@ import com.example.demomvp.utils.getSongDuration
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.layout_item_music.view.*
 
-class MusicAdapter: RecyclerView.Adapter<MusicAdapter.MyViewHolder>() {
-    private val songs = mutableListOf<Song>()
-    private var mListenerOn: OnItemRecyclerOnClickListener? = null
+class MusicAdapter : RecyclerView.Adapter<MusicAdapter.MyViewHolder>() {
+    private val mutableListSong = mutableListOf<Song>()
+    private var onItemRecyclerListener: OnItemRecyclerOnClickListener? = null
+    private val logger = MusicAdapter::class.java.simpleName
 
-    fun updateData(songs: MutableList<Song>) {
-        songs?.let {
-            this.songs.clear()
-            this.songs.addAll(it)
+
+    fun updateData(mutableSong: MutableList<Song>) {
+        mutableSong.let {
+            this.mutableListSong.clear()
+            this.mutableListSong.addAll(it)
             notifyDataSetChanged()
         }
     }
 
-    fun registerItemRecyclerViewClickListener(onItemRecyclerOnClickListener: OnItemRecyclerOnClickListener) {
-        mListenerOn = onItemRecyclerOnClickListener
+    fun setOnItemClickListener(listenerOn : OnItemRecyclerOnClickListener) {
+        onItemRecyclerListener = listenerOn
     }
 
-    fun setOnItemClickListener(listenerOn: OnItemRecyclerOnClickListener) {
-        mListenerOn = listenerOn
-    }
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MusicAdapter.MyViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup,
+                                    viewType: Int): MusicAdapter.MyViewHolder {
         return MyViewHolder(
             LayoutInflater.from(parent.context).inflate(
                 R.layout.layout_item_music, parent,
                 false
-            ), mListenerOn!!
+            ), onItemRecyclerListener!!
         )
     }
 
-    override fun getItemCount(): Int = songs.size
+    override fun getItemCount() = mutableListSong.size
 
     override fun onBindViewHolder(holder: MusicAdapter.MyViewHolder, position: Int) {
-        holder.bindData(songs[position])
+        holder.bindData(mutableListSong[position])
     }
 
-    inner class MyViewHolder(
-        itemView: View,
-        private val mListenerOn: OnItemRecyclerOnClickListener
-
-    ): RecyclerView.ViewHolder(itemView), View.OnClickListener {
-
-        private var mSong: Song? = null
-        private var listener: OnItemRecyclerOnClickListener? = null
+    inner class MyViewHolder(itemView: View,
+                             private val listenerOn: OnItemRecyclerOnClickListener) :
+        RecyclerView.ViewHolder(itemView), View.OnClickListener {
+        private var song: Song? = null
+        private var onItemClick: OnItemRecyclerOnClickListener? = null
 
         fun bindData(data: Song) {
-            mSong = data
-            Log.d(LOG, "title: ${data.title}, urlSong: ${data.urlSong}, urlImage: ${data.urlImage}")
-            itemView.textViewSongName.text = data.title
-            itemView.textViewSongDuration.text = getSongDuration(itemView.context, data.urlSong)
+            song = data
+            Log.d(logger, "title: ${data.songTitle}, " +
+                               "urlSong: ${data.songURL}, " +
+                               "urlImage: ${data.songImageURL}")
+            itemView.textViewSongName.text = data.songTitle
+            itemView.textViewSongDuration.text = getSongDuration(itemView.context,
+                                                                 data.songURL)
             itemView.setOnClickListener(this)
-            listener = mListenerOn
+            onItemClick = listenerOn
             getImageCircle(data)
         }
 
         override fun onClick(v: View?) {
-            listener?.onRecyclerItemClick(itemView.context, mSong, songs)
+            onItemClick?.onRecyclerItemClick(song, mutableListSong)
         }
 
         private fun getImageCircle(song: Song) {
             Glide.with(itemView.context)
-                .load(song.urlImage)
+                .load(song.songImageURL)
                 .into(itemView.imageViewSongItem)
         }
-
     }
-
-
-
-    companion object {
-        private val LOG = MusicAdapter::class.java.simpleName
-
-    }
-
-
 }

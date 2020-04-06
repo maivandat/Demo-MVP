@@ -5,23 +5,23 @@ import com.example.demomvp.data.source.local.MusicLocalDataSource
 import com.example.demomvp.data.source.remote.MusicRemoteDataSource
 import com.example.demomvp.data.source.remote.OnFetchDataJsonListener
 
-class MusicRepository private constructor(
-    private val musicLocalDataSource: MusicLocalDataSource,
-    private val musicRemoteDataSource: MusicRemoteDataSource
-): MusicDataSource.Local, MusicDataSource.Remote{
+class MusicRepository private constructor(private val localDataSource: MusicLocalDataSource,
+                                          private val remoteDataSource: MusicRemoteDataSource) :
+    MusicDataSource.Local, MusicDataSource.Remote{
+
     private object HOLDER {
         val INSTANCE = MusicRepository(
-            musicLocalDataSource = MusicLocalDataSource.instance,
-            musicRemoteDataSource = MusicRemoteDataSource.instance
-        )
+            localDataSource = MusicLocalDataSource.instance,
+            remoteDataSource = MusicRemoteDataSource.instance)
     }
+
     companion object {
         val instance: MusicRepository by lazy { HOLDER.INSTANCE }
     }
 
-    //remote
+    // Remote
     override fun getData(listener: OnFetchDataJsonListener<Song>) {
-        musicRemoteDataSource.getData(listener)
+        remoteDataSource.getData(listener)
     }
 
 

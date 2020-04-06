@@ -2,27 +2,34 @@ package com.example.demomvp.media
 
 import com.example.demomvp.data.model.Song
 import android.os.Handler
-import android.util.Log
 import com.example.demomvp.utils.getSongDuration
 
-class MediaPlayerManager private constructor(
-    private val onClickItemMusic: OnClickItemMusic
-): MediaSetting() {
-
+class MediaPlayerManager private constructor() : MediaSetting() {
+    private var onClickItem: OnClickItemMusic? = null
     private var currentSong: Song? = null
-    private val songs = mutableListOf<Song>()
+    private val mutableListSong = mutableListOf<Song>()
     private val handler = Handler()
     private lateinit var updateSeekBarThread: UpdateSeeBarThread
 
-    override fun create() {
+    private object HOLDER {
+        val INSTANCE = MediaPlayerManager()
+    }
 
+    companion object {
+        val instance: MediaPlayerManager by lazy { HOLDER.INSTANCE }
+    }
+
+    fun registerItemClickMusic(onClickItemMusic: OnClickItemMusic) {
+        this.onClickItem = onClickItemMusic
+    }
+
+    override fun create() {
         mediaPlayer.reset()
         mediaPlayer.apply {
-            setDataSource(currentSong!!.urlSong)
+            setDataSource(currentSong!!.songURL)
             prepare()
             updateSeekBarThread = UpdateSeeBarThread(handler)
         }
-
     }
 
     override fun <T> change(obj: T) {
@@ -30,18 +37,18 @@ class MediaPlayerManager private constructor(
         create()
     }
 
-
     override fun start() {
         handler.removeCallbacks(updateSeekBarThread)
         mediaPlayer.start()
-        onClickItemMusic.getDuration(getDuration(), getSongDuration(getDuration().toLong()))
-        onClickItemMusic.setState(false)
+        onClickItem!!.getDuration(getDuration(),
+                                  getSongDuration(getDuration().toLong()))
+        onClickItem!!.setState(false)
         handler.post(updateSeekBarThread)
     }
 
     override fun pause() {
         mediaPlayer.pause()
-        onClickItemMusic.setState(true)
+        onClickItem!!.setState(true)
         handler.removeCallbacks(updateSeekBarThread)
     }
 
@@ -63,51 +70,44 @@ class MediaPlayerManager private constructor(
     }
 
     private fun getSongPrevious(): Song {
-        var position = songs.indexOf(currentSong)
-        if (position == 0) position = songs.size - 1
-        else position--
-        onClickItemMusic.sendSong(songs[position])
-        return songs[position]
-    }
-    private fun getSongNext(): Song {
-        var position = songs.indexOf(currentSong)
-        if (position == songs.size - 1) position = 0
-        else position++
-        onClickItemMusic.sendSong(songs[position])
-        return songs[position]
+        var position = mutableListSong.indexOf(currentSong)
+        if (position == 0) position = mutableListSong.size - 1
+        else position --
+        onClickItem!!.sendSong(mutableListSong[position])
+        return mutableListSong[position]
     }
 
-    fun updateSong(song: Song){
+    private fun getSongNext(): Song {
+        var position = mutableListSong.indexOf(currentSong)
+        if (position == mutableListSong.size - 1) {
+            position = 0
+        } else {
+            position ++
+        }
+        onClickItem!!.sendSong(mutableListSong[position])
+        return mutableListSong[position]
+    }
+
+    fun updateSong(song: Song) {
         this.currentSong = song
     }
+
     fun updateSongs(list: List<Song>) {
-        this.songs.addAll(list)
+        this.mutableListSong.addAll(list)
     }
 
-    companion object {
-        private val TAG = MediaPlayerManager::class.java.simpleName
-        private var sInstance: MediaPlayerManager? = null
-        fun getInstance(onClickItemMusic: OnClickItemMusic): MediaPlayerManager {
-            if (sInstance == null) {
-                sInstance = MediaPlayerManager(onClickItemMusic)
-            }
-            return sInstance!!
-        }
-    }
+    inner class UpdateSeeBarThread(private val handlerThread: Handler) : Runnable {
 
-    inner class UpdateSeeBarThread(
-        private val handlerThread: Handler
-    ): Runnable {
         override fun run() {
-            if (currentDuration() < getDuration()) {
-                onClickItemMusic.updateTime(currentDuration(), getSongDuration(currentDuration().toLong()))
+            if (getCurrentDuration() < getDuration()) {
+                onClickItem!!.updateTime(getCurrentDuration(),
+                                         getSongDuration(getCurrentDuration().toLong()))
                 handler.post(this)
-            }else {
+            } else {
                 handlerThread.removeCallbacks(this)
                 next()
                 start()
             }
         }
     }
-
 }
