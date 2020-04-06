@@ -8,15 +8,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.demomvp.R
 import com.example.demomvp.data.model.Song
-import com.example.demomvp.utils.Constant
 import com.example.demomvp.utils.OnItemRecyclerOnClickListener
 import com.example.demomvp.utils.getSongDuration
-import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.layout_item_music.view.*
 
 class MusicAdapter : RecyclerView.Adapter<MusicAdapter.MyViewHolder>() {
     private val mutableListSong = mutableListOf<Song>()
-    private var onItemRecyclerListener: OnItemRecyclerOnClickListener? = null
+    private lateinit var onItemRecyclerListener: OnItemRecyclerOnClickListener
     private val logger = MusicAdapter::class.java.simpleName
 
 
@@ -38,7 +36,7 @@ class MusicAdapter : RecyclerView.Adapter<MusicAdapter.MyViewHolder>() {
             LayoutInflater.from(parent.context).inflate(
                 R.layout.layout_item_music, parent,
                 false
-            ), onItemRecyclerListener!!
+            ), onItemRecyclerListener
         )
     }
 
@@ -51,8 +49,8 @@ class MusicAdapter : RecyclerView.Adapter<MusicAdapter.MyViewHolder>() {
     inner class MyViewHolder(itemView: View,
                              private val listenerOn: OnItemRecyclerOnClickListener) :
         RecyclerView.ViewHolder(itemView), View.OnClickListener {
-        private var song: Song? = null
-        private var onItemClick: OnItemRecyclerOnClickListener? = null
+        private lateinit var song: Song
+        private lateinit var onItemClick: OnItemRecyclerOnClickListener
 
         fun bindData(data: Song) {
             song = data
@@ -68,7 +66,7 @@ class MusicAdapter : RecyclerView.Adapter<MusicAdapter.MyViewHolder>() {
         }
 
         override fun onClick(v: View?) {
-            onItemClick?.onRecyclerItemClick(song, mutableListSong)
+            onItemClick.onRecyclerItemClick(song, mutableListSong)
         }
 
         private fun getImageCircle(song: Song) {

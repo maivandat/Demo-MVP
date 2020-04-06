@@ -44,7 +44,7 @@ class PlayMusicActivity :
     }
 
     override fun getMusicData(song: Song, mutableListSong: List<Song>) {
-        playMusicPresenter.create(mediaPlayerManager, song, mutableListSong)
+        playMusicPresenter.createSong(mediaPlayerManager, song, mutableListSong)
         playMusicPresenter.startSong(mediaPlayerManager)
         bindData(song)
     }

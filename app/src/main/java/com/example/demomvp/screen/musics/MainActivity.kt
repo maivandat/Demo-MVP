@@ -49,10 +49,10 @@ class MainActivity :
         Toast.makeText(this, exception.message, Toast.LENGTH_SHORT).show()
     }
 
-    override fun onRecyclerItemClick(song: Song?, songList: List<Song>) {
+    override fun onRecyclerItemClick(song: Song, listSong: List<Song>) {
         val intent = Intent(this, PlayMusicActivity::class.java)
         intent.putExtra(Constant.KEY_SONG, song)
-        intent.putExtra(Constant.KEY_LIST_SONG, songList as Serializable)
+        intent.putExtra(Constant.KEY_LIST_SONG, listSong as Serializable)
         startActivity(intent)
         overridePendingTransition(R.anim.anim_down, R.anim.anim_up)
     }

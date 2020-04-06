@@ -7,17 +7,17 @@ import java.lang.Exception
 
 class MusicsPresenter(private val musicRepository: MusicRepository) :
     MusicsContract.Presenter {
-    private var viewContract: MusicsContract.View? = null
+    private lateinit var viewContract: MusicsContract.View
 
     override fun getMusicList() {
         musicRepository.getData(object : OnFetchDataJsonListener<Song> {
 
             override fun onSuccess(data: MutableList<Song>?) {
-                viewContract!!.musics(data!!)
+                viewContract.musics(data!!)
             }
 
             override fun onError(e: Exception?) {
-                viewContract!!.onError(e!!)
+                viewContract.onError(e!!)
             }
 
         })

@@ -7,7 +7,6 @@ import android.os.Handler
 import java.text.SimpleDateFormat
 import java.util.*
 
-
 fun getMediaPlayer(context: Context?): MediaPlayer? {
     val mediaPlayer = MediaPlayer()
     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
@@ -23,9 +22,7 @@ fun getMediaPlayer(context: Context?): MediaPlayer? {
         val subTitleControllerListener =
             Class.forName("android.media.SubtitleController\$Listener")
         val constructor = subTitleController.getConstructor(
-            *arrayOf(
-                Context::class.java, mediaTimeProvider, subTitleControllerListener
-            )
+            Context::class.java, mediaTimeProvider, subTitleControllerListener
         )
         val subTitleInstance = constructor.newInstance(context, null, null)
         val filed = subTitleController.getDeclaredField("mHandler")
