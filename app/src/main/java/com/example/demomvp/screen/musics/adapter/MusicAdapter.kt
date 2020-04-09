@@ -14,43 +14,51 @@ import kotlinx.android.synthetic.main.layout_item_music.view.*
 
 class MusicAdapter : RecyclerView.Adapter<MusicAdapter.MyViewHolder>() {
     private val mutableListSong = mutableListOf<Song>()
-    private lateinit var onItemRecyclerListener: OnItemRecyclerOnClickListener
+    private var onItemRecyclerListener: OnItemRecyclerOnClickListener? = null
     private val logger = MusicAdapter::class.java.simpleName
 
-
-    fun updateData(mutableSong: MutableList<Song>) {
-        mutableSong.let {
+    fun updateData(songList: List<Song>) {
+        songList.let {
             this.mutableListSong.clear()
             this.mutableListSong.addAll(it)
             notifyDataSetChanged()
         }
     }
 
-    fun setOnItemClickListener(listenerOn : OnItemRecyclerOnClickListener) {
-        onItemRecyclerListener = listenerOn
+    fun setOnItemClickListener(listener : OnItemRecyclerOnClickListener?) {
+        onItemRecyclerListener = listener
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup,
-                                    viewType: Int): MusicAdapter.MyViewHolder {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): MusicAdapter.MyViewHolder {
         return MyViewHolder(
             LayoutInflater.from(parent.context).inflate(
-                R.layout.layout_item_music, parent,
+                R.layout.layout_item_music,
+                parent,
                 false
-            ), onItemRecyclerListener
+            ),
+            onItemRecyclerListener
         )
     }
 
     override fun getItemCount() = mutableListSong.size
 
-    override fun onBindViewHolder(holder: MusicAdapter.MyViewHolder, position: Int) {
+    override fun onBindViewHolder(
+        holder: MusicAdapter.MyViewHolder,
+        position: Int
+    ) {
         holder.bindData(mutableListSong[position])
     }
 
-    inner class MyViewHolder(itemView: View,
-                             private val listenerOn: OnItemRecyclerOnClickListener) :
-        RecyclerView.ViewHolder(itemView), View.OnClickListener {
-        private lateinit var song: Song
-        private lateinit var onItemClick: OnItemRecyclerOnClickListener
+    inner class MyViewHolder(
+        itemView: View,
+        private val listener: OnItemRecyclerOnClickListener?
+    ) : RecyclerView.ViewHolder(itemView),
+        View.OnClickListener {
+        private var song: Song? = null
+        private var onItemClick: OnItemRecyclerOnClickListener? = null
 
         fun bindData(data: Song) {
             song = data
@@ -58,21 +66,21 @@ class MusicAdapter : RecyclerView.Adapter<MusicAdapter.MyViewHolder>() {
                                "urlSong: ${data.songURL}, " +
                                "urlImage: ${data.songImageURL}")
             itemView.textViewSongName.text = data.songTitle
-            itemView.textViewSongDuration.text = getSongDuration(itemView.context,
-                                                                 data.songURL)
+            itemView.textViewSongDuration.text =
+                getSongDuration(itemView.context, data.songURL)
             itemView.setOnClickListener(this)
-            onItemClick = listenerOn
+            onItemClick = listener
             getImageCircle(data)
         }
 
         override fun onClick(v: View?) {
-            onItemClick.onRecyclerItemClick(song, mutableListSong)
+            onItemClick?.onRecyclerItemClick(song, mutableListSong)
         }
 
         private fun getImageCircle(song: Song) {
             Glide.with(itemView.context)
-                .load(song.songImageURL)
-                .into(itemView.imageViewSongItem)
+                 .load(song.songImageURL)
+                 .into(itemView.imageViewSongItem)
         }
     }
 }

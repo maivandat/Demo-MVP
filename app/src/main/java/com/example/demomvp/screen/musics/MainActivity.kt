@@ -16,7 +16,8 @@ import java.io.Serializable
 import java.lang.Exception
 
 class MainActivity :
-    AppCompatActivity(), MusicsContract.View,
+    AppCompatActivity(),
+    MusicsContract.View,
     OnItemRecyclerOnClickListener {
     private lateinit var musicAdapter: MusicAdapter
     private lateinit var musicPresenter: MusicsPresenter
@@ -41,15 +42,15 @@ class MainActivity :
         musicPresenter.getMusicList()
     }
 
-    override fun musics(mutableListSong: MutableList<Song>) {
-        musicAdapter.updateData(mutableListSong)
+    override fun musics(songList: List<Song>) {
+        musicAdapter.updateData(songList)
     }
 
     override fun onError(exception: Exception) {
         Toast.makeText(this, exception.message, Toast.LENGTH_SHORT).show()
     }
 
-    override fun onRecyclerItemClick(song: Song, listSong: List<Song>) {
+    override fun onRecyclerItemClick(song: Song?, listSong: List<Song>?) {
         val intent = Intent(this, PlayMusicActivity::class.java)
         intent.putExtra(Constant.KEY_SONG, song)
         intent.putExtra(Constant.KEY_LIST_SONG, listSong as Serializable)

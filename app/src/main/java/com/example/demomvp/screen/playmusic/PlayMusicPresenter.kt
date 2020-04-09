@@ -1,6 +1,7 @@
 package com.example.demomvp.screen.playmusic
 
 import android.app.Activity
+import android.content.Intent
 import com.example.demomvp.data.model.Song
 import com.example.demomvp.media.MediaPlayerManager
 import com.example.demomvp.utils.Constant
@@ -12,8 +13,10 @@ class PlayMusicPresenter : PlayMusicContract.Presenter {
 
     override fun getSongData(activity: Activity) {
         val intent = activity.intent
-        val song  = intent.getSerializableExtra(Constant.KEY_SONG) as Song
-        val listSong = intent.getSerializableExtra(Constant.KEY_LIST_SONG) as List<*>
+        val song  =
+            intent.getSerializableExtra(Constant.KEY_SONG) as Song
+        val listSong =
+            intent.getSerializableExtra(Constant.KEY_LIST_SONG) as List<*>
         viewContract.getMusicData(song, listSong as List<Song>)
     }
 
@@ -58,5 +61,7 @@ class PlayMusicPresenter : PlayMusicContract.Presenter {
 
     override fun onStop() {}
 
-    override fun setView(view: PlayMusicContract.View) { viewContract = view }
+    override fun setView(view: PlayMusicContract.View) {
+        viewContract = view
+    }
 }

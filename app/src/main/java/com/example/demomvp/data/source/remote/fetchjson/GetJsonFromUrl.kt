@@ -13,7 +13,7 @@ class GetJsonFromUrl constructor(private val listener: OnFetchDataJsonListener<S
         var data = ""
         try {
             val parseDataWithJson = ParseDataWithJson()
-            data = parseDataWithJson.getJsonFromUrl(strings[0])!!
+            data = parseDataWithJson.getJsonFromUrl(strings[0]).toString()
         } catch (e: Exception) {
             listener.onError(e)
         }
@@ -22,7 +22,7 @@ class GetJsonFromUrl constructor(private val listener: OnFetchDataJsonListener<S
 
     override fun onPostExecute(data: String?) {
         super.onPostExecute(data)
-        data!!.let {
+        data?.let {
             try {
                 val jsonObject = JSONObject(it)
                 listener.onSuccess(ParseDataWithJson().parseJsonToData(jsonObject))

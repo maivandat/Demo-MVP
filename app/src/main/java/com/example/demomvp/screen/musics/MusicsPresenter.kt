@@ -5,21 +5,21 @@ import com.example.demomvp.data.source.MusicRepository
 import com.example.demomvp.data.source.remote.OnFetchDataJsonListener
 import java.lang.Exception
 
-class MusicsPresenter(private val musicRepository: MusicRepository) :
-    MusicsContract.Presenter {
+class MusicsPresenter(
+    private val musicRepository: MusicRepository
+) : MusicsContract.Presenter {
     private lateinit var viewContract: MusicsContract.View
 
     override fun getMusicList() {
         musicRepository.getData(object : OnFetchDataJsonListener<Song> {
 
-            override fun onSuccess(data: MutableList<Song>?) {
-                viewContract.musics(data!!)
+            override fun onSuccess(data: List<Song>?) {
+                data?.let { viewContract.musics(data) }
             }
 
             override fun onError(e: Exception?) {
-                viewContract.onError(e!!)
+                e?.let { viewContract.onError(e) }
             }
-
         })
     }
 
@@ -31,5 +31,7 @@ class MusicsPresenter(private val musicRepository: MusicRepository) :
 
     }
 
-    override fun setView(view: MusicsContract.View) { viewContract = view }
+    override fun setView(view: MusicsContract.View) {
+        viewContract = view
+    }
 }

@@ -8,7 +8,7 @@ interface MusicsContract {
 
     interface View {
 
-        fun musics(mutableListSong: MutableList<Song>)
+        fun musics(songList: List<Song>)
 
         fun onError(exception: Exception)
     }
